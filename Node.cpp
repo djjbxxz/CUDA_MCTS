@@ -1,10 +1,14 @@
+#include "stdafx.h"
 #include "Node.h"
-
-vector<char> Node::get_random_color(char num)
+constexpr auto c_puct = 1;
+float Node::get_UBC()
 {
-	vector<char>random_color;
-	random_color.reserve(num);
-	for (char i = 0; i < num; i++)
-		random_color.push_back(rand() % 8);
-	return random_color;
+	if (!parent_node)
+		return 0;
+	return value + c_puct * p / (1 + visit_count + parent_node->visit_count);
+}
+
+void Node::call_estimate(float *p)
+{
+	estimate(p, game_map.data());
 }

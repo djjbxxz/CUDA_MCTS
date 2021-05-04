@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="kernel.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Load_library.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="MCTS.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Node.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Board.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Visualization.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header">
+      <UniqueIdentifier>{0275d274-49d5-4755-b48f-0cd13a927765}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source">
+      <UniqueIdentifier>{a2d1818c-3d86-47c6-995b-adf9647cf776}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <CudaCompile Include="kernel.cu" />
+    <CudaCompile Include="stdafx.h">
+      <Filter>Header</Filter>
+    </CudaCompile>
+    <CudaCompile Include="Board.cpp">
+      <Filter>Source</Filter>
+    </CudaCompile>
+    <CudaCompile Include="Load_library.cpp">
+      <Filter>Source</Filter>
+    </CudaCompile>
+    <CudaCompile Include="MCTS.cpp">
+      <Filter>Source</Filter>
+    </CudaCompile>
+    <CudaCompile Include="Node.cpp">
+      <Filter>Source</Filter>
+    </CudaCompile>
+    <CudaCompile Include="stdafx.cpp">
+      <Filter>Source</Filter>
+    </CudaCompile>
+    <CudaCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Visualization.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
