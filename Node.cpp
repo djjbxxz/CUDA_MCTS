@@ -1,11 +1,11 @@
 #include "stdafx.h"
 #include "Node.h"
-constexpr auto c_puct = 1;
+#include <math.h>
 float Node::get_UBC()
 {
 	if (!parent_node)
 		return 0;
-	return value + c_puct * p / (1 + visit_count + parent_node->visit_count);
+	return value + c_puct * p * sqrt(parent_node->visit_count) / (1 + visit_count);
 }
 
 void Node::call_estimate(float *p)

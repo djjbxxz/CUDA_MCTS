@@ -1,6 +1,10 @@
-#pragma once
+О╩©#pragma once
+#include "Load_library.h"
+#include <vector>
+using namespace std;
+
 class Board
-{//╢Ф╢╒фЕелпео╒сКсно╥бъ╪╜╨╞йЩ
+{//О©╫Ф╢╒О©╫О©╫О©╫О©╫О©╫О©╫о╒О©╫О©╫О©╫О©╫о╥О©╫ъ╪О©╫О©╫О©╫О©╫О©╫
 	
 public:
 	Board(

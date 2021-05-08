@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "MCTS.h"
 #include "kernel.h"
 constexpr auto decay_rate = 0.5;
@@ -62,6 +62,17 @@ constexpr auto decay_rate = 0.5;
 //	//current_node = leaves[?];
 //}
 
+void MCTS::select_CUDA()
+{
+	int result = 0;
+	if (leaves.size() != 1)
+		result = CUDA_accelerator(&leaves).get_max_UBC_index();
+	//cout<<"CUDA:"<<result.get_max_UBC_index()<<endl;
+	current_node = leaves[result];
+	//ï¿½ï¿½Ò¶ï¿½ï¿½ï¿½Ð±ï¿½ï¿½ï¿½É¾ï¿½ï¿½
+	leaves.erase(leaves.begin() + result);
+}
+
 void MCTS::select()
 {
 	if (root->is_end)
@@ -78,24 +89,28 @@ void MCTS::select()
 			max_index = i;
 		}
 	}
-	//±£´æ
+
+	//cout << "common:"<<max_index<<endl;
+	//ï¿½ï¿½ï¿½ï¿½
 	current_node = leaves[max_index];
 
-	//´ÓÒ¶×ÓÁÐ±íÖÐÉ¾³ý
+	//ï¿½ï¿½Ò¶ï¿½ï¿½ï¿½Ð±ï¿½ï¿½ï¿½É¾ï¿½ï¿½
 	leaves.erase(leaves.begin() + max_index);
 	current_node->visit_count++;
 }
 
 void MCTS::expand()
 {
+
+	current_node->visit_count++;
 	Node* new_node;
 	float p[6561];
 	for (int i = 0; i < 6561; i++)
 		p[i] = 1;
-	//»ñÈ¡ËùÓÐ¿ÉÐÐ×ß·¨
+	//ï¿½ï¿½È¡ï¿½ï¿½ï¿½Ð¿ï¿½ï¿½ï¿½ï¿½ß·ï¿½
 	current_node->call_estimate(p);
 	for (int i = 0; i < 6561; i++)
-		//´´½¨×Ó½Úµã
+		//ï¿½ï¿½ï¿½ï¿½ï¿½Ó½Úµï¿½
 		if (p[i] > 0)
 		{
 			new_node = new Node(current_node, convert_to_index(i), p[i]);

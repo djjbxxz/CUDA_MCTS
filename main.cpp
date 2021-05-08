@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "stdio.h"
 #include "Board.h"
 #include "Node.h"
@@ -51,7 +51,7 @@ int convert_to_densed(int index[4])
 
 int main()
 {
-	//³õÊ¼»¯ 
+	//ï¿½ï¿½Ê¼ï¿½ï¿½ 
 	auto dll = Load_library();
 	Node::estimate = dll.Estimate;
 	Board::judge = dll.judge;
@@ -61,11 +61,13 @@ int main()
 	//Board a;
 	//print_board(b);
 	auto mcts = MCTS(new Node());
-	for (int i = 0; i < 5000; i++)
+	for (int i = 0; i < 1000; i++)
 	{
+		//mcts.select_CUDA();
 		mcts.select();
 		mcts.expand();
 		mcts.backup();
+
 	}
 
 
@@ -86,5 +88,5 @@ int main()
 	//test << <1, 3 >> > (start, mcts);
 
 	//printf("%d\n", start.test);
-	
+	return 0;
 }

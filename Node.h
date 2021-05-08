@@ -1,5 +1,7 @@
 #pragma once
 #include "Board.h"
+constexpr auto c_puct = 1;
+
 class Node :public Board
 {
 public:
@@ -31,7 +33,7 @@ public:
 	vector<Node> children;
 	float p;
 	bool is_root;
-	unsigned int visit_count = 0;
+	unsigned int visit_count = rand()%10;
 	float value = 0;
 	static  Estimate_type estimate;
 public:
