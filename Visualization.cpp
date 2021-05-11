@@ -2,9 +2,10 @@
 #include <iostream>
 #include <sstream>
 #include <string.h>
+#include <conio.h>
 #define circlesize 20
-using namespace std;
-int Visual::color[8] = {
+using namespace visual;
+int Show_node::color[8] = {
 	0xFFFFFF,
 	0x009C08,
 	0xED1C24,
@@ -15,16 +16,18 @@ int Visual::color[8] = {
 	0x943100
 };
 
-void Visual::draw()
+void Show_node::draw()
 {
 	init();
 	drawlines();
 	drawtchess();
 	drawnextThree();
 	drawscore();
+	drawlastmove();
+	getch();
 }
 
-void Visual::drawlines()
+void Show_node::drawlines()
 {
 	setlinecolor(BLACK);
 	setlinestyle(PS_SOLID, 2);
@@ -38,21 +41,21 @@ void Visual::drawlines()
 	line(200, 50, 350, 50);
 }
 
-void Visual::init()
+void Show_node::init()
 {
 	initgraph(550, 600);
 	setbkcolor(WHITE);
 	cleardevice();
 }
 
-void Visual::drawtchess()
+void Show_node::drawtchess()
 {
 	for (int i = 0; i < 81; i++)
 		if (game_map[i] > 0)
 			_plotchess(to_coord(i, game_map[i]));
 }
 
-void Visual::drawnextThree()
+void Show_node::drawnextThree()
 {
 	setlinestyle(PS_SOLID, 3);
 	for (int i = 0; i < 3; i++)
@@ -64,7 +67,7 @@ void Visual::drawnextThree()
 
 }
 
-void Visual::drawscore()
+void Show_node::drawscore()
 {
 	settextcolor(BLACK);
 	string s1("score:");
@@ -78,14 +81,30 @@ void Visual::drawscore()
 	outtextxy(375, 62, _T(s1.c_str()));
 }
 
-Point Visual::to_coord(char index, char color)
+void Show_node::drawlastmove()
 {
-	char y = index % 9;
-	char x = (index / 9) % 9;
+	if (node->real_move)
+	{
+		settextcolor(BLACK);
+
+		TCHAR S[] = _T("S");
+		TCHAR E[] = _T("E");
+
+		
+		outtextxy(70 + node->real_move->last_move[1] * 50, 105 + node->real_move->last_move[0] * 50, S);
+		outtextxy(70 + node->real_move->last_move[3] * 50, 105 + node->real_move->last_move[2] * 50, E);
+
+	}
+}
+
+visual::Point Show_node::to_coord(char index, char color)
+{
+	char x = index % 9;
+	char y = (index / 9) % 9;
 	return { x,y,color };
 }
 
-void Visual::_plotchess(Point point)
+void Show_node::_plotchess(visual::Point point)
 {
 	setlinestyle(PS_SOLID, 3);
 	setlinecolor(color[point.color]);

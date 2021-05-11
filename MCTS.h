@@ -1,6 +1,7 @@
 #pragma once
 #include "Node.h"
 #include "kernel.h"
+#include "Visualization.h"
 class MCTS
 {
 public:
@@ -16,9 +17,6 @@ public:
 	void expand();
 	void backup();
 	void play();
-
-
-
 public:
 	Node *root;
 	Node *current_node;

@@ -6,9 +6,11 @@
 #include "MCTS.h"
 #include "Visualization.h"
 #include <conio.h>
+#include "Pathfinding.h"
+#include "GameControler.h"
+#include <Algorithm>
 
-judge_type Board::judge = nullptr;
-Estimate_type Node::estimate = nullptr;
+using namespace visual;
 
 void rand_init()
 {
@@ -38,8 +40,8 @@ vector<char> convert_to_index(int densed)
 	auto r = vector<char>(4, 0);
 	for (int i = 3; i >= 0; i--)
 	{
-		r[i] = densed % 8;
-		densed /= 8;
+		r[i] = densed % 9;
+		densed /= 9;
 	}
 	return r;
 }
@@ -49,27 +51,41 @@ int convert_to_densed(int index[4])
 	return index[0] * 8 * 8 * 8 + index[1] * 8 * 8 + index[2] * 8 + index[3];
 }
 
+
+
 int main()
 {
-	//��ʼ�� 
-	auto dll = Load_library();
-	Node::estimate = dll.Estimate;
-	Board::judge = dll.judge;
 	rand_init();
 
 
-	//Board a;
-	//print_board(b);
-	auto mcts = MCTS(new Node());
-	for (int i = 0; i < 1000; i++)
+	// test  game_map
+	vector<char>_game_map(81, 0);
+	_game_map[0] = 1;
+	_game_map[1] = 1;
+	_game_map[2] = 1;
+	_game_map[3] = 1;
+
+	_game_map[8] = 1;
+	_game_map[17] = 1;
+
+	auto node = new Node();
+	//node->game_map = _game_map;//debug地图
+	auto mcts = MCTS(node);
+
+
+	for (int j = 0; j < 100; j++)
 	{
-		//mcts.select_CUDA();
-		mcts.select();
-		mcts.expand();
-		mcts.backup();
+		for (int i = 0; i < 1; i++)
+		{
+			//mcts.select_CUDA();
+			mcts.select();
+			mcts.expand();
+			mcts.backup();
 
+		}
+		mcts.play();
+		Show_node(mcts.root->parent_node);
 	}
-
 
 
 	//Node start;

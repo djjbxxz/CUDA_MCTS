@@ -15,11 +15,9 @@ vector<char> Board::init_game_map()
 	for (char i = 0; i < 5; i++)
 	{
 		auto empty_list = get_empty_index(game_map);
-		cout << int(empty_list.size())<<" ";
 		auto index = empty_list[rand() % empty_list.size()];
 		auto color = get_a_random_color();
 		game_map[index] = color;
-		cout << int(color)<<endl;
 	}
 	return game_map;
 }
@@ -41,14 +39,6 @@ vector<char> Board::get_random_colors(char num)
 	return list;
 }
 
-void Board::call_judge()
-{
-	auto re_val = judge(game_map.data(),next_three.data(),last_move.data());
-	if (re_val == -1)
-		is_end = true;
-	else
-		score += re_val;
-}
 
 char Board::get_a_random_color()
 {

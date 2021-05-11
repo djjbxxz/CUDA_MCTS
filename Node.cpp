@@ -1,14 +1,15 @@
 #include "stdafx.h"
 #include "Node.h"
 #include <math.h>
+#include "Pathfinding.h"
 float Node::get_UBC()
 {
 	if (!parent_node)
 		return 0;
-	return value + c_puct * p * sqrt(parent_node->visit_count) / (1 + visit_count);
+	return value+score*10 /*+ c_puct  * sqrt(parent_node->visit_count) / (1 + visit_count)*/;
 }
 
-void Node::call_estimate(float *p)
+void Node::call_estimate(bool*p)
 {
-	estimate(p, game_map.data());
+	Estimate(p, game_map.data());
 }

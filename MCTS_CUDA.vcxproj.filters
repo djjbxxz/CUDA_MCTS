@@ -4,16 +4,42 @@
     <CudaCompile Include="kernel.cu" />
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="DLL">
-      <UniqueIdentifier>{55a296f2-0121-4b97-b944-d081216f8b19}</UniqueIdentifier>
+    <Filter Include="Dependencies">
+      <UniqueIdentifier>{b2a00b19-2522-4af3-8c23-baeadf73887d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dependencies\GameControler">
+      <UniqueIdentifier>{8523fb05-5e08-4a5b-a99c-0f956b957562}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dependencies\Pathfinding">
+      <UniqueIdentifier>{74d0c54f-91a6-4b40-b16b-5fb592ad14c9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="DLL\GameControlerDLL.dll">
-      <Filter>DLL</Filter>
-    </None>
-    <None Include="DLL\PathFindingDllforPython.dll">
-      <Filter>DLL</Filter>
-    </None>
+    <ClCompile Include="Board.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="MCTS.cpp" />
+    <ClCompile Include="Node.cpp" />
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="Visualization.cpp" />
+    <ClCompile Include="GameControler.cpp">
+      <Filter>Dependencies\GameControler</Filter>
+    </ClCompile>
+    <ClCompile Include="Pathfinding.cpp">
+      <Filter>Dependencies\Pathfinding</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Board.h" />
+    <ClInclude Include="kernel.h" />
+    <ClInclude Include="MCTS.h" />
+    <ClInclude Include="Node.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Visualization.h" />
+    <ClInclude Include="GameControler.h">
+      <Filter>Dependencies\GameControler</Filter>
+    </ClInclude>
+    <ClInclude Include="Pathfinding.h">
+      <Filter>Dependencies\Pathfinding</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

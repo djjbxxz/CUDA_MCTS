@@ -42,6 +42,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>$(IncludePath)</IncludePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -56,6 +59,9 @@
     <CudaCompile>
       <TargetMachinePlatform>64</TargetMachinePlatform>
     </CudaCompile>
+    <PostBuildEvent>
+      <Command>editbin /SUBSYSTEM:CONSOLE $(OutDir)\$(ProjectName).exe</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -81,25 +87,23 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Board.cpp" />
-    <ClCompile Include="Load_library.cpp" />
+    <ClCompile Include="GameControler.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MCTS.cpp" />
     <ClCompile Include="Node.cpp" />
+    <ClCompile Include="Pathfinding.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="Visualization.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Board.h" />
+    <ClInclude Include="GameControler.h" />
     <ClInclude Include="kernel.h" />
-    <ClInclude Include="Load_library.h" />
     <ClInclude Include="MCTS.h" />
     <ClInclude Include="Node.h" />
+    <ClInclude Include="Pathfinding.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Visualization.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="DLL\GameControlerDLL.dll" />
-    <None Include="DLL\PathFindingDllforPython.dll" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

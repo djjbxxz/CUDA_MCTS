@@ -1,7 +1,9 @@
 ﻿#include "stdafx.h"
 #include "MCTS.h"
 #include "kernel.h"
-constexpr auto decay_rate = 0.5;
+#include "Visualization.h"
+#include <Algorithm>
+constexpr float decay_rate = 0.5;
 //void MCTS::select_CUDA()
 //{
 //	auto num_leaf = leaves.size();
@@ -90,34 +92,37 @@ void MCTS::select()
 		}
 	}
 
-	//cout << "common:"<<max_index<<endl;
-	//����
 	current_node = leaves[max_index];
 
-	//��Ҷ���б���ɾ��
 	leaves.erase(leaves.begin() + max_index);
 	current_node->visit_count++;
 }
+
+
+bool  comp(const Node* a, const Node* b) {
+	return a->value > b->value;
+}
+
 
 void MCTS::expand()
 {
 
 	current_node->visit_count++;
 	Node* new_node;
-	float p[6561];
+	bool p[6561];
 	for (int i = 0; i < 6561; i++)
-		p[i] = 1;
-	//��ȡ���п����߷�
+		p[i] = false;
 	current_node->call_estimate(p);
 	for (int i = 0; i < 6561; i++)
-		//�����ӽڵ�
-		if (p[i] > 0)
+		if (p[i])
 		{
-			new_node = new Node(current_node, convert_to_index(i), p[i]);
+			new_node = new Node(current_node, convert_to_index(i));
 			if (!new_node->is_end)
 				leaves.push_back(new_node);
 			current_node->children.push_back(*new_node);
 		}
+
+	//sort(leaves.begin(), leaves.end(), comp);
 }
 
 void MCTS::backup()
@@ -127,9 +132,26 @@ void MCTS::backup()
 		current_node->value += current_node->children[i].value * decay_rate;
 	}
 	auto update_node = *current_node;
-	while (update_node.parent_node)
+	while (!update_node.is_root)
 	{
 		update_node.parent_node->value += update_node.value * decay_rate;
 		update_node = *update_node.parent_node;
 	}
+}
+
+
+bool  sort_children(const Node a, const Node b) {
+	return a.value > b.value;
+
+}
+void MCTS::play()
+{
+	sort(root->children.begin(),
+		root->children.end(), sort_children);
+	root->real_move = &root->children[0];
+	root = &root->children[0];
+	current_node = nullptr;
+	leaves.clear();
+	leaves.push_back(root);
+
 }

@@ -7,8 +7,6 @@
 #include <iostream>
 
 
-#include "Load_library.h"
-
 
 #define  SHARED 	__device__ __managed__
 

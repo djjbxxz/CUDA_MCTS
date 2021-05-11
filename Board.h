@@ -1,11 +1,11 @@
 ﻿#pragma once
-#include "Load_library.h"
+#include "GameControler.h"
 #include <vector>
 using namespace std;
 
 class Board
-{//�洢������Ϣ����Ϸ�߼�����
-	
+{
+
 public:
 	Board(
 		vector<char>_game_map,
@@ -18,7 +18,11 @@ public:
 		last_move(_last_move),
 		next_three(_next_three)
 	{
-		call_judge();
+		result = judge(game_map.data(), next_three.data(), last_move.data());
+		if (result->score == -1)
+			is_end = true;
+		else
+			score += result->score;
 	}
 	Board()  // generate random start status
 	{
@@ -28,12 +32,12 @@ public:
 		next_three = get_random_colors(3);
 	}
 public:
-	static judge_type judge;
 	vector<char>game_map;
 	vector<char>last_move;
 	vector<char>next_three;
 	bool is_end = false;
 	int score = 0;
+	Return_message* result;
 
 private:
 	vector<char>get_random_color(char num);
@@ -41,6 +45,5 @@ private:
 	vector<char>get_empty_index(vector<char> game_map);
 	vector<char>get_random_colors(char num);
 	char get_a_random_color();
-	void call_judge();
 };
 
