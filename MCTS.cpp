@@ -1,6 +1,6 @@
 ﻿#include "stdafx.h"
 #include "MCTS.h"
-#include "kernel.h"
+//#include "kernel.h"
 #include "Visualization.h"
 #include <Algorithm>
 constexpr float decay_rate = 0.5;
@@ -64,16 +64,25 @@ constexpr float decay_rate = 0.5;
 //	//current_node = leaves[?];
 //}
 
-void MCTS::select_CUDA()
-{
-	int result = 0;
-	if (leaves.size() != 1)
-		result = CUDA_accelerator(&leaves).get_max_UBC_index();
-	//cout<<"CUDA:"<<result.get_max_UBC_index()<<endl;
-	current_node = leaves[result];
-	//��Ҷ���б���ɾ��
-	leaves.erase(leaves.begin() + result);
-}
+//void MCTS::select_CUDA()
+//{
+//	int result = 0;
+//	if (leaves.size() != 1)
+//		result = CUDA_accelerator(&leaves).get_max_UBC_index();
+//	//cout<<"CUDA:"<<result.get_max_UBC_index()<<endl;
+//	current_node = leaves[result];
+//	//��Ҷ���б���ɾ��
+//	leaves.erase(leaves.begin() + result);
+//}
+
+//void delete_node(Node*node)
+//{
+//	for (size_t i=0;i<node->children.size();i++)
+//	{
+//		delete_node(node->children[i]);
+//	}
+//	delete node;
+//}
 
 void MCTS::select()
 {
@@ -119,7 +128,7 @@ void MCTS::expand()
 			new_node = new Node(current_node, convert_to_index(i));
 			if (!new_node->is_end)
 				leaves.push_back(new_node);
-			current_node->children.push_back(*new_node);
+			current_node->children.push_back(new_node);
 		}
 
 	//sort(leaves.begin(), leaves.end(), comp);
@@ -127,29 +136,36 @@ void MCTS::expand()
 
 void MCTS::backup()
 {
+	if (current_node->is_root)
+		return;
 	for (size_t i = 0; i < current_node->children.size(); i++)
 	{
-		current_node->value += current_node->children[i].value * decay_rate;
+		current_node->value += current_node->children[i]->value * decay_rate;
 	}
-	auto update_node = *current_node;
-	while (!update_node.is_root)
+	auto update_node = current_node;
+	while (!update_node->is_root)
 	{
-		update_node.parent_node->value += update_node.value * decay_rate;
-		update_node = *update_node.parent_node;
+		update_node->parent_node->value += update_node->value * decay_rate;
+		update_node = update_node->parent_node;
 	}
 }
 
 
-bool  sort_children(const Node a, const Node b) {
-	return a.value > b.value;
+bool  sort_children(const Node *a, const Node *b) {
+	return a->value > b->value;
 
 }
 void MCTS::play()
 {
 	sort(root->children.begin(),
 		root->children.end(), sort_children);
-	root->real_move = &root->children[0];
-	root = &root->children[0];
+	root->real_move = root->children[0];
+	//for (size_t i = 1; i < root->children.size(); i++)//删除除real_move以外其它子节点
+	//	delete_node(root->children[i]);
+	//for (size_t i = 0; i < root->real_move->children.size(); i++)//删除real_move下所有子节点
+	//	delete_node(root->children[i]);
+
+	root = root->children[0];
 	current_node = nullptr;
 	leaves.clear();
 	leaves.push_back(root);

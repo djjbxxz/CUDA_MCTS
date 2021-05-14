@@ -1,6 +1,5 @@
 #pragma once
 #include "Node.h"
-#include "kernel.h"
 #include "Visualization.h"
 class MCTS
 {

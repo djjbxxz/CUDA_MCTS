@@ -23,7 +23,7 @@ public:
 public:
 	Node* parent_node = nullptr;
 	Node* real_move = nullptr;
-	vector<Node> children;
+	vector<Node*> children;
 	bool is_root;
 	unsigned int visit_count = 0;
 	float value = 0;

@@ -2,7 +2,6 @@
 #include "stdio.h"
 #include "Board.h"
 #include "Node.h"
-#include "kernel.h"
 #include "MCTS.h"
 #include "Visualization.h"
 #include <conio.h>
@@ -19,21 +18,6 @@ void rand_init()
 	QueryPerformanceCounter(&seed);
 	srand(seed.QuadPart);
 }
-
-//void print_board(Node a)
-//{
-//	//print next_three
-//	cout << "      ";
-//	for (int i = 0; i < a.next_three.size(); i++)
-//		cout << int(a.next_three[i]) << " ";
-//	cout << endl;
-//	//print game_map
-//	for (char i = 0; i < a.game_map.size(); i++)
-//	{
-//		cout << int(a.game_map[i]) << " ";
-//		if ((i + 1) % 9 == 0)cout << endl;
-//	}
-//}
 
 vector<char> convert_to_index(int densed)
 {
@@ -79,6 +63,8 @@ int main()
 		{
 			//mcts.select_CUDA();
 			mcts.select();
+			if (!mcts.current_node)
+				return 0;
 			mcts.expand();
 			mcts.backup();
 
@@ -86,23 +72,5 @@ int main()
 		mcts.play();
 		Show_node(mcts.root->parent_node);
 	}
-
-
-	//Node start;
-	//SHARED MCTS mcts(start);
-
-	//printf("%d\n", start.test);
-
-	////test(start, mcts);
-
-	//printf("%d\n", start.test);
-
-	//test << <1, 1 >> > (start, mcts);
-
-	//printf("%d\n", start.test);
-
-	//test << <1, 3 >> > (start, mcts);
-
-	//printf("%d\n", start.test);
 	return 0;
 }

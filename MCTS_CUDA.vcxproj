@@ -83,9 +83,6 @@
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <CudaCompile Include="kernel.cu" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="Board.cpp" />
     <ClCompile Include="GameControler.cpp" />
     <ClCompile Include="main.cpp" />
@@ -98,7 +95,6 @@
   <ItemGroup>
     <ClInclude Include="Board.h" />
     <ClInclude Include="GameControler.h" />
-    <ClInclude Include="kernel.h" />
     <ClInclude Include="MCTS.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="Pathfinding.h" />

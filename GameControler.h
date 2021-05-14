@@ -50,19 +50,18 @@ public:
 	GameControler(char* _map, char* _comingcolor, char* _move) :move(_move), game_map(_map), comingcolor(_comingcolor) { go(); }
 	void go();
 	void init_random();
-	char get_game_map(Point point);
+	char get_game_map(const Point &point);
 	void set_game_map(Point, int);
 	void Move();
 	void Scan_all();
-	void Scanpoint(Point);
+	void Scanpoints(vector<Point>&);
 	void ScanLined(Point, int);
 	void AddScoreAndEliminate(bool);
-	bool LayChess();
+	vector<Point> PlaceChess();
 	vector<Point> GetEmpty();
 	void remove(vector<Point>&, int index);
 	int get_value();
-	bool check_if_repeat(vector<Point> points);
-	bool is_in_list(vector<Point>points, Point point);
+	bool check_if_repeat(vector<Point> &points);
 	Return_message* get_result();
 
 
