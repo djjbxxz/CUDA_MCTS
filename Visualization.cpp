@@ -16,14 +16,27 @@ int Show_node::color[8] = {
 	0x943100
 };
 
+HWND Show_node::window = nullptr;
+
 void Show_node::draw()
 {
-	init();
+	if (!window)
+		window = initgraph(550, 600);
+	IMAGE img(550, 600);
+	SetWorkingImage(&img);
+
+	setbkcolor(WHITE);
+	cleardevice();
+
+
+
 	drawlines();
 	drawtchess();
 	drawnextThree();
 	drawscore();
 	drawlastmove();
+	SetWorkingImage();
+	putimage(0, 0, &img);
 	getch();
 }
 
@@ -43,9 +56,6 @@ void Show_node::drawlines()
 
 void Show_node::init()
 {
-	initgraph(550, 600);
-	setbkcolor(WHITE);
-	cleardevice();
 }
 
 void Show_node::drawtchess()
@@ -90,7 +100,7 @@ void Show_node::drawlastmove()
 		TCHAR S[] = _T("S");
 		TCHAR E[] = _T("E");
 
-		
+
 		outtextxy(70 + node->real_move->last_move[1] * 50, 105 + node->real_move->last_move[0] * 50, S);
 		outtextxy(70 + node->real_move->last_move[3] * 50, 105 + node->real_move->last_move[2] * 50, E);
 

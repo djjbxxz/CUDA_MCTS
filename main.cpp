@@ -35,7 +35,25 @@ int convert_to_densed(int index[4])
 	return index[0] * 8 * 8 * 8 + index[1] * 8 * 8 + index[2] * 8 + index[3];
 }
 
+int do_MCTS(MCTS mcts,int iteration_each_step,bool show)
+{
+	while (true)
+	{
+		for (int i = 0; i < iteration_each_step; i++)
+		{
+			if (!mcts.select())
+				break;
+			mcts.expand();
+			mcts.backup();
 
+		}
+		if (!mcts.play())
+			break;
+		if(show)
+		Show_node(mcts.root->parent_node);
+	}
+	return mcts.root->score;
+}
 
 int main()
 {
@@ -56,21 +74,23 @@ int main()
 	//node->game_map = _game_map;//debug地图
 	auto mcts = MCTS(node);
 
+	return do_MCTS(mcts, 1,true);
 
-	for (int j = 0; j < 100; j++)
-	{
-		for (int i = 0; i < 1; i++)
-		{
-			//mcts.select_CUDA();
-			mcts.select();
-			if (!mcts.current_node)
-				return 0;
-			mcts.expand();
-			mcts.backup();
+	//for (int j = 0; j < 1000; j++)
+	//{
+	//	for (int i = 0; i < 400; i++)
+	//	{
+	//		//mcts.select_CUDA();
+	//		mcts.select();
+	//		if (!mcts.current_node)
+	//			return mcts.root->score;
+	//		mcts.expand();
+	//		mcts.backup();
 
-		}
-		mcts.play();
-		Show_node(mcts.root->parent_node);
-	}
-	return 0;
+	//	}
+	//	if (!mcts.play())
+	//		break;
+	//	Show_node(mcts.root->parent_node);
+	//}
+	//return mcts.root->score;
 }

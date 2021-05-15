@@ -11,11 +11,10 @@ public:
 		leaves.push_back(root);
 	}
 public:
-	void select_CUDA();
-	void select();
+	bool select();
 	void expand();
 	void backup();
-	void play();
+	bool play();
 public:
 	Node *root;
 	Node *current_node;

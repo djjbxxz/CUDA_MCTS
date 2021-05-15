@@ -35,6 +35,7 @@ private:
 	void _plotchess(visual::Point);
 private:
 	static int color[8];
+	static HWND window;
 private:
 	Node* node;
 	vector<char>game_map;

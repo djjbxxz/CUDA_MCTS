@@ -1,93 +1,22 @@
 ﻿#include "stdafx.h"
 #include "MCTS.h"
-//#include "kernel.h"
 #include "Visualization.h"
 #include <Algorithm>
 constexpr float decay_rate = 0.5;
-//void MCTS::select_CUDA()
-//{
-//	auto num_leaf = leaves.size();
-//	//prepare data
-//	auto value = new float[num_leaf];
-//	auto p = new float[num_leaf];
-//	auto visit_count = new int[num_leaf];
-//	auto parent_visit_count = new int[num_leaf];
-//	for (size_t i = 0; i < num_leaf; i++)
-//	{
-//		value[i] = leaves[i].value;
-//		p[i] = leaves[i].p;
-//		visit_count[i] = leaves[i].visit_count;
-//		parent_visit_count[i] = leaves[i].parent_node ? leaves[i].parent_node->visit_count : 0;
-//	}
-//
-//	//CUDA malloc
-//	float* d_value;
-//	cudaMalloc(&d_value, num_leaf * sizeof(float));
-//	float* d_p;
-//	cudaMalloc(&d_p, num_leaf * sizeof(float));
-//	int* d_visit_count;
-//	cudaMalloc(&d_visit_count, num_leaf * sizeof(int));
-//	int* d_parent_visit_count;
-//	cudaMalloc(&d_parent_visit_count, num_leaf * sizeof(int));
-//	float* d_result;
-//	cudaMalloc(&d_result, num_leaf * sizeof(float));
-//	cudaDeviceSynchronize();
-//
-//	//copy to device
-//	cudaMemcpy(d_value, value, num_leaf * sizeof(float), cudaMemcpyHostToDevice);
-//	cudaMemcpy(d_p, p, num_leaf * sizeof(float), cudaMemcpyHostToDevice);
-//	cudaMemcpy(d_visit_count, visit_count, num_leaf * sizeof(int), cudaMemcpyHostToDevice);
-//	cudaMemcpy(d_parent_visit_count, parent_visit_count, num_leaf * sizeof(int), cudaMemcpyHostToDevice);
-//	cudaDeviceSynchronize();
-//	//execute kernel
-//	//cal_val<<<1,num_leaf>>>(d_value, 0.1f, d_p, d_visit_count, d_parent_visit_count,d_result);
-//	// delete host memory
-//	delete[] value;
-//	delete[] p;
-//	delete[] visit_count;
-//	delete[] parent_visit_count;
-//	//wait for execution
-//	cudaDeviceSynchronize();
-//
-//	cudaFree(d_value);
-//	cudaFree(d_p);
-//	cudaFree(d_visit_count);
-//	cudaFree(d_parent_visit_count);
-//
-//	/*auto result = new float[num_leaf];
-//	cudaMemcpy(result, d_result, num_leaf * sizeof(float), cudaMemcpyDeviceToHost);*/
-//	//for (size_t i = 0; i < num_leaf; i++)
-//	//	cout << result[i] << endl;
-//
-//	auto max = new int;
-//
-//	//current_node = leaves[?];
-//}
 
-//void MCTS::select_CUDA()
-//{
-//	int result = 0;
-//	if (leaves.size() != 1)
-//		result = CUDA_accelerator(&leaves).get_max_UBC_index();
-//	//cout<<"CUDA:"<<result.get_max_UBC_index()<<endl;
-//	current_node = leaves[result];
-//	//��Ҷ���б���ɾ��
-//	leaves.erase(leaves.begin() + result);
-//}
+void delete_node(Node*node)
+{
+	for (size_t i=0;i<node->children.size();i++)
+	{
+		delete_node(node->children[i]);
+	}
+	delete node;
+}
 
-//void delete_node(Node*node)
-//{
-//	for (size_t i=0;i<node->children.size();i++)
-//	{
-//		delete_node(node->children[i]);
-//	}
-//	delete node;
-//}
-
-void MCTS::select()
+bool MCTS::select()
 {
 	if (root->is_end)
-		return;
+		return false;
 	float max = 0.0;
 	size_t max_index = 0;
 	float ubc;
@@ -100,11 +29,16 @@ void MCTS::select()
 			max_index = i;
 		}
 	}
-
-	current_node = leaves[max_index];
-
-	leaves.erase(leaves.begin() + max_index);
-	current_node->visit_count++;
+	if (max_index < leaves.size())
+	{
+		current_node = leaves[max_index];
+		leaves.erase(leaves.begin() + max_index);
+		current_node->visit_count++;
+		return true;
+	}
+	else
+		return false;
+	
 }
 
 
@@ -155,19 +89,20 @@ bool  sort_children(const Node *a, const Node *b) {
 	return a->value > b->value;
 
 }
-void MCTS::play()
+bool MCTS::play()
 {
+	if (!root->children.size())
+		return false;
 	sort(root->children.begin(),
 		root->children.end(), sort_children);
 	root->real_move = root->children[0];
-	//for (size_t i = 1; i < root->children.size(); i++)//删除除real_move以外其它子节点
-	//	delete_node(root->children[i]);
-	//for (size_t i = 0; i < root->real_move->children.size(); i++)//删除real_move下所有子节点
-	//	delete_node(root->children[i]);
+	for (size_t i = 1; i < root->children.size(); i++)//删除除real_move以外其它子节点
+		delete_node(root->children[i]);
+
 
 	root = root->children[0];
 	current_node = nullptr;
 	leaves.clear();
 	leaves.push_back(root);
-
+	return true;
 }

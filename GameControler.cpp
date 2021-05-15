@@ -3,7 +3,7 @@
 #define WEIGHT_OVER_5 9999
 #define WEIGHT_UNDER_5_LINEDS 50
 #define WEIGHT_UNDER_5_EMPTY_CHESS 8
-#define WEIGHT_UNDER_5_BLOCK_CHESS -20
+#define WEIGHT_UNDER_5_BLOCK_CHESS -10
 #define WEIGHT_EACH_MARGIN_CHESS -2
 
 bool is_in_list(vector<Point>& points, Point point)
