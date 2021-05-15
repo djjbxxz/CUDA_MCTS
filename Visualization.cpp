@@ -18,18 +18,14 @@ int Show_node::color[8] = {
 
 HWND Show_node::window = nullptr;
 
-void Show_node::draw()
+void Show_node::draw_item()
 {
 	if (!window)
 		window = initgraph(550, 600);
 	IMAGE img(550, 600);
 	SetWorkingImage(&img);
-
 	setbkcolor(WHITE);
 	cleardevice();
-
-
-
 	drawlines();
 	drawtchess();
 	drawnextThree();
@@ -37,7 +33,6 @@ void Show_node::draw()
 	drawlastmove();
 	SetWorkingImage();
 	putimage(0, 0, &img);
-	getch();
 }
 
 void Show_node::drawlines()
@@ -52,10 +47,6 @@ void Show_node::drawlines()
 	for (int i = 200; i <= 350; i += 50)
 		line(i, 50, i, 100);
 	line(200, 50, 350, 50);
-}
-
-void Show_node::init()
-{
 }
 
 void Show_node::drawtchess()
@@ -74,7 +65,6 @@ void Show_node::drawnextThree()
 		setfillcolor(color[next_three[i]]);
 		fillcircle(225 + 50 * i, 75, circlesize);
 	}
-
 }
 
 void Show_node::drawscore()
@@ -96,11 +86,8 @@ void Show_node::drawlastmove()
 	if (node->real_move)
 	{
 		settextcolor(BLACK);
-
 		TCHAR S[] = _T("S");
 		TCHAR E[] = _T("E");
-
-
 		outtextxy(70 + node->real_move->last_move[1] * 50, 105 + node->real_move->last_move[0] * 50, S);
 		outtextxy(70 + node->real_move->last_move[3] * 50, 105 + node->real_move->last_move[2] * 50, E);
 
@@ -121,4 +108,43 @@ void Show_node::_plotchess(visual::Point point)
 	setfillcolor(color[point.color]);
 	fillcircle(75 + point.x * 50, 125 + point.y * 50, circlesize);
 
+}
+
+void Show_node::draw(Node* _node)
+{
+
+	_show(_node);
+	vector<Node*> states;
+	char str;
+
+	while (true)
+	{
+		str = getch();
+
+		if (str == 'b')
+		{
+			if (node->parent_node == nullptr)
+				continue;
+			states.push_back(node);
+			_show(node->parent_node);
+		}
+		else
+		{
+			if (states.empty())
+			{
+				break;
+			}
+			_show(states.back());
+			states.erase(states.end()-1);
+		}
+	}
+}
+
+void Show_node::_show(Node* _node)
+{
+	node = _node;
+	game_map = node->game_map;
+	next_three = node->next_three;
+	score = node->score;
+	draw_item();
 }

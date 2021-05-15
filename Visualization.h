@@ -14,22 +14,22 @@ namespace visual
 class Show_node
 {
 public:
-	Show_node(Node* _node)
+	Show_node()
 	{
-		game_map = _node->game_map;
-		next_three = _node->next_three;
-		score = _node->score;
-		node = _node;
-		draw();
+		window = initgraph(550, 600);
 	}
+
+public:
+	void draw(Node* _node);
 private:
 	void init();
-	void draw();
+	void draw_item();
 	void drawlines();
 	void drawtchess();
 	void drawnextThree();
 	void drawscore();
 	void drawlastmove();
+	void _show(Node* _node);
 	visual::Point to_coord(char index, char color);
 private:
 	void _plotchess(visual::Point);

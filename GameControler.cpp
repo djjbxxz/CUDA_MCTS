@@ -76,20 +76,14 @@ void GameControler::Scan_all()
 	for (char i = 0; i < 9; i++)
 		for (char j = 0; j < 9; j++)
 			if (get_game_map({ i, j }) != 0)
-				ScanLined({ i, j }, 4);
+				ScanLined({ i, j });
 }
 
-void GameControler::Scanpoints(vector<Point>& points)
-{
-	lineds.clear();
-	for (size_t i = 0; i < points.size(); i++)
-		ScanLined(points[i], 8);
-}
 
-void GameControler::ScanLined(Point point, const int directionnum)
+void GameControler::ScanLined(Point point)
 {
 	Point* new_point;
-	for (int i = 0; i < directionnum; i++)
+	for (int i = 0; i < 4; i++)
 	{
 		auto lined = vector<Point>();
 		new_point = &point;
@@ -101,6 +95,40 @@ void GameControler::ScanLined(Point point, const int directionnum)
 			lined.push_back({ new_point->x, new_point->y });
 		};
 		if (lined.size() >= 1)
+		{
+			lined.push_back(point);
+			if (!check_if_repeat(lined))
+				lineds.push_back(lined);
+		}
+	}
+}
+
+
+void GameControler::Scanpoints(vector<Point>& points)
+{
+	lineds.clear();
+	for (size_t i = 0; i < points.size(); i++)
+		Scanpoint(points[i]);
+}
+
+void GameControler::Scanpoint(Point point)
+{
+	Point* new_point;
+	for (int i = 0; i < 4; i++)
+	{
+		auto lined = vector<Point>();
+		for (int j = 0; j <= 4; j += 4)
+		{
+			new_point = &point;
+			while (true)
+			{
+				new_point = &((*new_point) + scan_direction[i+j]);
+				if (get_game_map(*new_point) != get_game_map(point))
+					break;
+				lined.push_back({ new_point->x, new_point->y });
+			};
+		}
+		if (lined.size() >= 4)
 		{
 			lined.push_back(point);
 			if (!check_if_repeat(lined))

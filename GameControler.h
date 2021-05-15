@@ -55,7 +55,6 @@ public:
 	void Move();
 	void Scan_all();
 	void Scanpoints(vector<Point>&);
-	void ScanLined(Point, int);
 	void AddScoreAndEliminate(bool);
 	vector<Point> PlaceChess();
 	vector<Point> GetEmpty();
@@ -64,7 +63,9 @@ public:
 	bool check_if_repeat(vector<Point> &points);
 	Return_message* get_result();
 
-
+private:
+	void ScanLined(Point);
+	void Scanpoint(Point);
 private:
 	char* game_map;
 	char* comingcolor;

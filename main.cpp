@@ -35,7 +35,7 @@ int convert_to_densed(int index[4])
 	return index[0] * 8 * 8 * 8 + index[1] * 8 * 8 + index[2] * 8 + index[3];
 }
 
-int do_MCTS(MCTS mcts,int iteration_each_step,bool show)
+int do_MCTS(MCTS mcts, int iteration_each_step, Show_node* show = nullptr)
 {
 	while (true)
 	{
@@ -49,8 +49,8 @@ int do_MCTS(MCTS mcts,int iteration_each_step,bool show)
 		}
 		if (!mcts.play())
 			break;
-		if(show)
-		Show_node(mcts.root->parent_node);
+		if (show)
+			show->draw(mcts.root->parent_node);
 	}
 	return mcts.root->score;
 }
@@ -58,7 +58,7 @@ int do_MCTS(MCTS mcts,int iteration_each_step,bool show)
 int main()
 {
 	rand_init();
-
+	auto show = Show_node();
 
 	// test  game_map
 	vector<char>_game_map(81, 0);
@@ -74,7 +74,7 @@ int main()
 	//node->game_map = _game_map;//debug地图
 	auto mcts = MCTS(node);
 
-	return do_MCTS(mcts, 1,true);
+	return do_MCTS(mcts, 400, &show);
 
 	//for (int j = 0; j < 1000; j++)
 	//{
