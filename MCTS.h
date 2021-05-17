@@ -1,6 +1,7 @@
 #pragma once
 #include "Node.h"
 #include "Visualization.h"
+#include "threadpool.h"
 class MCTS
 {
 public:
@@ -15,10 +16,13 @@ public:
 	void expand();
 	void backup();
 	bool play();
+private:
+	static Node* create_new_node(Node* parent_node, int i);
+
 public:
 	Node *root;
 	Node *current_node;
-	vector<Node*> leaves;
+	static vector<Node*> leaves;
 public:
 	//static   judge_type judge;
 };

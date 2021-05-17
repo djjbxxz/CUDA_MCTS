@@ -37,5 +37,6 @@
     <ClInclude Include="Pathfinding.h">
       <Filter>Dependencies\Pathfinding</Filter>
     </ClInclude>
+    <ClInclude Include="threadpool.h" />
   </ItemGroup>
 </Project>

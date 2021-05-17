@@ -58,7 +58,6 @@ int do_MCTS(MCTS mcts, int iteration_each_step, Show_node* show = nullptr)
 int main()
 {
 	rand_init();
-	auto show = Show_node();
 
 	// test  game_map
 	vector<char>_game_map(81, 0);
@@ -73,8 +72,9 @@ int main()
 	auto node = new Node();
 	//node->game_map = _game_map;//debug地图
 	auto mcts = MCTS(node);
-
-	return do_MCTS(mcts, 400, &show);
+	auto score = do_MCTS(mcts, 400, &Show_node());
+	cout << "score:" << score<<endl;
+	return score;
 
 	//for (int j = 0; j < 1000; j++)
 	//{
