@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Node.h"
-#include <math.h>
+#include <cmath>
 #include "Pathfinding.h"
 float Node::get_UBC()
 {

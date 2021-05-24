@@ -17,16 +17,16 @@ void Pathfinding::go()
 
 bool Pathfinding::is_inList(Point point, vector<Point>list)
 {
-	for (int i = 0; i < list.size(); i++)
-		if (list[i] == point)
+	for (auto & i : list)
+		if (i == point)
 			return true;
 	return false;
 }
 
 bool Pathfinding::is_inList(Point point, list<Point>_list)
 {
-	for (list<Point>::iterator i = _list.begin(); i != _list.end(); i++)
-		if (*i == point)
+	for (auto & i : _list)
+		if (i == point)
 			return true;
 	return false;
 }
@@ -58,13 +58,13 @@ vector<Point> Pathfinding::getsurpoint_filter1(Point point, vector<Point>closeli
 {
 	auto surrdingpoints = getsurrdingpoint(point);
 	vector<Point> temp;
-	for (int i = 0; i < surrdingpoints.size(); i++)
+	for (auto surrdingpoint : surrdingpoints)
 	{
-		point = surrdingpoints[i];
+		point = surrdingpoint;
 		if (!(game_map(point) > 0 ||
 			is_inList(point, closelist) ||
 			is_scaned(point)))
-			temp.push_back(surrdingpoints[i]);
+			temp.push_back(surrdingpoint);
 	}
 	return temp;
 }
@@ -81,17 +81,17 @@ bool Pathfinding::is_scaned(Point point)
 
 void Pathfinding::init_scan_map()
 {
-	for (int i = 0; i < 9; i++)
-		for (int j = 0; j < 9; j++)
-			is_scaned_map[i][j] = false;
+	for (auto & i : is_scaned_map)
+		for (bool & j : i)
+			j = false;
 }
 
 void Pathfinding::GetBeginSet()
 {
-	for (int i = 0; i < emptyset.size(); i++)
+	for (const auto & i : emptyset)
 	{
 		init_scan_map();
-		startset.push_back(Getedge(emptyset[i]));
+		startset.push_back(Getedge(i));
 	}
 }
 
@@ -102,9 +102,9 @@ vector<Point> Pathfinding::Getedge(vector<Point>Pointset)
 	for (auto point : Pointset)
 	{
 		auto surrdingpoints = getsurrdingpoint(point);
-		for (int i = 0; i < surrdingpoints.size(); i++)
+		for (auto i : surrdingpoints)
 		{
-			surrdingpoint = surrdingpoints[i];
+			surrdingpoint = i;
 			if (!is_scaned(surrdingpoint) && !is_inList(surrdingpoint, Pointset))
 			{
 				edge.push_back(surrdingpoint);
@@ -133,10 +133,10 @@ vector<Point> Pathfinding::getsurrdingpoint(Point point)
 {
 	auto temp = vector<Point>();
 	char x, y;
-	for (int i = 0; i < 4; i++)
+	for (auto i : scan_direction)
 	{
-		x = point.x + scan_direction[i][0];
-		y = point.y + scan_direction[i][1];
+		x = point.x + i[0];
+		y = point.y + i[1];
 		auto point = Point(x, y);
 		if (!is_outofrange(point))
 			temp.push_back(point);
@@ -154,9 +154,9 @@ void Pathfinding::MakeResult()
 
 void Pathfinding::calculate(vector<Point>start, vector<Point>end)
 {
-	for (int i = 0; i < start.size(); i++)
-		for (int j = 0; j < end.size(); j++)
-			p[start[i].x * 9 * 9 * 9 + start[i].y * 9 * 9 + end[j].x * 9 + end[j].y] = true;
+	for (auto & i : start)
+		for (auto & j : end)
+			p[i.x * 9 * 9 * 9 + i.y * 9 * 9 + j.x * 9 + j.y] = true;
 }
 
 

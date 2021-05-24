@@ -5,7 +5,7 @@ vector<char> Board::get_random_color(char num)
 	vector<char>random_color;
 	random_color.resize(num);
 	for (char i = 0; i < num; i++)
-		random_color[i]=rand() % 7+1;
+		random_color[i] = rand() % 7 + 1;
 	return random_color;
 }
 
@@ -42,6 +42,6 @@ vector<char> Board::get_random_colors(char num)
 
 char Board::get_a_random_color()
 {
-	return rand()%7+1;
+	return rand() % 7 + 1;
 }
 

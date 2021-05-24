@@ -1,15 +1,13 @@
 ﻿#include "stdafx.h"
-#include "stdio.h"
+#include <cstdio>
 #include "Board.h"
 #include "Node.h"
 #include "MCTS.h"
-#include "Visualization.h"
 #include <conio.h>
 #include "Pathfinding.h"
 #include "GameControler.h"
 #include <Algorithm>
 
-using namespace visual;
 
 void rand_init()
 {
@@ -35,23 +33,17 @@ int convert_to_densed(int index[4])
 	return index[0] * 8 * 8 * 8 + index[1] * 8 * 8 + index[2] * 8 + index[3];
 }
 
-int do_MCTS(MCTS mcts, int iteration_each_step, Show_node* show = nullptr)
+int do_MCTS(MCTS mcts, int iteration_each_step)
 {
-	while (true)
+	for (int i = 0; i < iteration_each_step; i++)
 	{
-		for (int i = 0; i < iteration_each_step; i++)
-		{
-			if (!mcts.select())
-				break;
-			mcts.expand();
-			mcts.backup();
-
-		}
-		if (!mcts.play())
+		if (!mcts.select())
 			break;
-		if (show)
-			show->draw(mcts.root->parent_node);
+		mcts.expand();
+		mcts.backup();
+
 	}
+	mcts.play();
 	return mcts.root->score;
 }
 
@@ -72,9 +64,9 @@ int main()
 	auto node = new Node();
 	//node->game_map = _game_map;//debug地图
 	auto mcts = MCTS(node);
-	auto score = do_MCTS(mcts, 400, &Show_node());
-	cout << "score:" << score<<endl;
-	return score;
+	//auto score = do_MCTS(mcts, 400, &Show_node());
+	//cout << "score:" << score << endl;
+	//return score;
 
 	//for (int j = 0; j < 1000; j++)
 	//{
@@ -94,3 +86,5 @@ int main()
 	//}
 	//return mcts.root->score;
 }
+
+

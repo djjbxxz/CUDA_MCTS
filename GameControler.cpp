@@ -8,16 +8,16 @@
 
 bool is_in_list(vector<Point>& points, Point point)
 {
-	for (int i = 0; i < points.size(); i++)
-		if (point == points[i])
+	for (auto i : points)
+		if (point == i)
 			return true;
 	return false;
 }
 
 bool operator==(vector<Point>& a, vector<Point>& b)
 {
-	for (size_t a_it = 0; a_it < a.size(); a_it++)
-		if (!is_in_list(b, a[a_it]))
+	for (auto a_it : a)
+		if (!is_in_list(b, a_it))
 			return false;
 	for (size_t b_it = 0; b_it < a.size(); b_it++)
 		if (!is_in_list(a, b[b_it]))
@@ -35,7 +35,7 @@ void GameControler::go()
 	if (score == 0)
 	{
 		auto temp = PlaceChess();
-		if (!temp.size())
+		if (temp.empty())
 			score = -1;
 		Scanpoints(temp);
 		AddScoreAndEliminate(false);
@@ -92,9 +92,9 @@ void GameControler::ScanLined(Point point)
 			new_point = &((*new_point) + scan_direction[i]);
 			if (get_game_map(*new_point) != get_game_map(point))
 				break;
-			lined.push_back({ new_point->x, new_point->y });
+			lined.emplace_back(new_point->x, new_point->y);
 		};
-		if (lined.size() >= 1)
+		if (!lined.empty())
 		{
 			lined.push_back(point);
 			if (!check_if_repeat(lined))
@@ -107,8 +107,8 @@ void GameControler::ScanLined(Point point)
 void GameControler::Scanpoints(vector<Point>& points)
 {
 	lineds.clear();
-	for (size_t i = 0; i < points.size(); i++)
-		Scanpoint(points[i]);
+	for (auto point : points)
+		Scanpoint(point);
 }
 
 void GameControler::Scanpoint(Point point)
@@ -125,7 +125,7 @@ void GameControler::Scanpoint(Point point)
 				new_point = &((*new_point) + scan_direction[i+j]);
 				if (get_game_map(*new_point) != get_game_map(point))
 					break;
-				lined.push_back({ new_point->x, new_point->y });
+				lined.emplace_back(new_point->x, new_point->y);
 			};
 		}
 		if (lined.size() >= 4)
@@ -139,7 +139,7 @@ void GameControler::Scanpoint(Point point)
 
 void GameControler::AddScoreAndEliminate(bool add_score)
 {
-	for (auto points : lineds)
+	for (const auto& points : lineds)
 	{
 		if (points.size() < 5)
 			continue;
@@ -159,7 +159,7 @@ vector<Point> GameControler::PlaceChess()
 	int randomlocation;
 	for (int i = 0; i < 3; i++)
 	{
-		if (empty.size() == 0)
+		if (empty.empty())
 			return vector<Point>();
 		randomlocation = rand() % empty.size();
 		pointsPlaced.push_back(empty[randomlocation]);
@@ -176,7 +176,7 @@ vector<Point> GameControler::GetEmpty()
 	for (char i = 0; i < 9; i++)
 		for (char j = 0; j < 9; j++)
 			if (get_game_map({ i, j }) == 0)
-				empty.push_back({ i, j });
+				empty.emplace_back(i, j);
 	return empty;
 }
 
@@ -190,21 +190,21 @@ int GameControler::get_value()
 	//TODO:将周围的empty优先纳入可能的5子，先于block_chess
 	// 撞到block_chess后换方向搜，标记 change_direction = true，留下标记，下次若回来从这里开始搜
 	int value = 0;
-	for (int i = 0; i < lineds.size(); i++)
+	for (auto & lined : lineds)
 	{
-		size_t size = lineds[i].size();
-		size_t still_need = 5 - lineds[i].size();
+		size_t size = lined.size();
+		size_t still_need = 5 - lined.size();
 		if (still_need <= 0)
 		{
 			//4
 			value += WEIGHT_OVER_5 * size;
 			continue;
 		}
-		auto direction = lineds[i][1] - lineds[i][0];
-		auto color = get_game_map(lineds[i][0]);
+		auto direction = lined[1] - lined[0];
+		auto color = get_game_map(lined[0]);
 		bool change_direction = true;
 
-		Point point = lineds[i][0];
+		Point point = lined[0];
 		int empty_count = 0;
 		int block_chess_count = 0;
 
@@ -228,7 +228,7 @@ int GameControler::get_value()
 				{
 					//换方向
 					direction = -direction;
-					point = lineds[i][0];
+					point = lined[0];
 					change_direction = false;
 					continue;
 				}
@@ -261,8 +261,8 @@ int GameControler::get_value()
 
 bool GameControler::check_if_repeat(vector<Point>& points)
 {
-	for (int i = 0; i < lineds.size(); i++)
-		if (points == lineds[i])
+	for (auto & lined : lineds)
+		if (points == lined)
 			return true;
 	return false;
 }

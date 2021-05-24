@@ -5,7 +5,7 @@ constexpr auto c_puct = 1;
 class Node :public Board
 {
 public:
-	Node(Node *old,
+	Node(Node* old,
 		vector<char>_last_move)
 		:Board(old->game_map, old->next_three, old->score, _last_move)
 	{
@@ -14,6 +14,13 @@ public:
 		value = result->value;
 	}
 	Node() :// generate random start status
+		is_root(true),
+		parent_node(nullptr)
+	{}
+
+	Node(vector<char> game_map,
+		vector<char> next_three)
+		:Board(game_map, next_three),
 		is_root(true),
 		parent_node(nullptr)
 	{}

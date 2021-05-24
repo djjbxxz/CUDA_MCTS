@@ -8,8 +8,8 @@ mutex mutex_leaves;
 vector<Node*> MCTS::leaves = vector<Node*>();
 void delete_node(Node* node)
 {
-	for (size_t i = 0; i < node->children.size(); i++)
-		delete_node(node->children[i]);
+	for (auto & i : node->children)
+		delete_node(i);
 	delete node;
 }
 
@@ -49,38 +49,32 @@ bool  comp(const Node* a, const Node* b) {
 
 void MCTS::expand()
 {
+
 	current_node->visit_count++;
 	Node* new_node;
 	bool p[6561];
-	for (int i = 0; i < 6561; i++)
-		p[i] = false;
+	for (bool & i : p)
+		i = false;
 	current_node->call_estimate(p);
-	vector< future<Node*> > results;
-	{
-	ThreadPool executor{ THREAD_MAX_NUM };
 	for (int i = 0; i < 6561; i++)
 		if (p[i])
 		{
-			results.emplace_back(
-				executor.enqueue
-				(create_new_node, current_node, i));
+			new_node = new Node(current_node, convert_to_index(i));
+			if (!new_node->is_end)
+				leaves.push_back(new_node);
+			current_node->children.push_back(new_node);
 		}
-	}
-	for (auto&& result : results)
-	{
-		auto temp = result.get();
-		current_node->children.emplace_back(temp);
-		MCTS::leaves.push_back(temp);
-	}
+
+	//sort(leaves.begin(), leaves.end(), comp);
 }
 
 void MCTS::backup()
 {
 	if (current_node->is_root)
 		return;
-	for (size_t i = 0; i < current_node->children.size(); i++)
+	for (auto & i : current_node->children)
 	{
-		current_node->value += current_node->children[i]->value * decay_rate;
+		current_node->value += i->value * decay_rate;
 	}
 	auto update_node = current_node;
 	while (!update_node->is_root)
@@ -97,7 +91,7 @@ bool  sort_children(const Node* a, const Node* b) {
 
 bool MCTS::play()
 {
-	if (!root->children.size())
+	if (root->children.empty())
 		return false;
 	sort(root->children.begin(),
 		root->children.end(), sort_children);
@@ -109,7 +103,6 @@ bool MCTS::play()
 	root = root->children[0];
 	current_node = nullptr;
 	leaves.clear();
-	leaves.push_back(root);
 	return true;
 }
 

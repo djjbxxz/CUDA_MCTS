@@ -31,6 +31,14 @@ public:
 		last_move = vector<char>(4, -1);
 		next_three = get_random_colors(3);
 	}
+
+	Board(vector<char>_game_map, vector<char>_next_three)  
+	{
+		game_map = _game_map;
+
+		last_move = vector<char>(4, -1);
+		next_three = _next_three;
+	}
 public:
 	vector<char>game_map;
 	vector<char>last_move;
