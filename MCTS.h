@@ -1,28 +1,26 @@
 #pragma once
 #include "Node.h"
-#include "Visualization.h"
-#include "threadpool.h"
 class MCTS
 {
 public:
 	MCTS(Node *_root)
 	{
 		root = _root;
-		//for (int i = 0; i <40000000; i++)//40 million at most
 		leaves.push_back(root);
 	}
 public:
+	int do_MCTS(int iteration_each_step);
+private:
+	static Node* create_new_node(Node* parent_node, int i);
 	bool select();
 	void expand();
 	void backup();
 	bool play();
-private:
-	static Node* create_new_node(Node* parent_node, int i);
 
+private:
+	static std::vector<char> convert_to_index(int densed);
 public:
 	Node *root;
 	Node *current_node;
-	static vector<Node*> leaves;
-public:
-	//static   judge_type judge;
+	static std::vector<Node*> leaves;
 };

@@ -1,5 +1,5 @@
-#ifndef THREAD_POOL_H
-#define THREAD_POOL_H
+#pragma once
+#define THREAD_MAX_NUM 6
 
 #include <vector>
 #include <queue>
@@ -10,6 +10,8 @@
 #include <future>
 #include <functional>
 #include <stdexcept>
+
+
 
 class ThreadPool {
 public:
@@ -95,4 +97,5 @@ inline ThreadPool::~ThreadPool()
 		worker.join();
 }
 
-#endif
+extern ThreadPool executor;
+

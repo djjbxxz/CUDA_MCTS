@@ -1,8 +1,5 @@
 #pragma once
 #include <vector>
-#include"windows.h"
-
-using namespace std;
 
 struct Return_message
 {
@@ -18,19 +15,15 @@ struct Point
 	char x, y;
 	Point(char	_x, char _y) :x(_x), y(_y) {};
 	Point() {}
-	bool operator== (const Point a)
+	bool operator== (const Point &a)
 	{
 		return x == a.x && y == a.y;
 	};
-	Point operator+ (const Point a)
+	Point operator+ (const Point &a)
 	{
 		return { x + a.x, y + a.y };
 	}
-	Point operator+(const char* a)
-	{
-		return { x + *a, y + *(a + 1) };
-	}
-	Point operator-(const Point a)//减法
+	Point operator-(const Point &a)//减法
 	{
 		return { x - a.x, y - a.y };
 	}
@@ -38,7 +31,7 @@ struct Point
 	{
 		return { -x,-y };
 	}
-	Point operator+=(const Point a)
+	Point operator+=(const Point &a)
 	{
 		return { x + a.x,y + a.y };
 	}
@@ -49,30 +42,29 @@ class GameControler
 public:
 	GameControler(char* _map, char* _comingcolor, char* _move) :move(_move), game_map(_map), comingcolor(_comingcolor) { go(); }
 	void go();
-	void init_random();
 	char get_game_map(const Point &point);
 	void set_game_map(Point, int);
 	void Move();
 	void Scan_all();
-	void Scanpoints(vector<Point>&);
+	void Scanpoints(std::vector<Point>&);
 	void AddScoreAndEliminate(bool);
-	vector<Point> PlaceChess();
-	vector<Point> GetEmpty();
-	void remove(vector<Point>&, int index);
+	std::vector<Point> PlaceChess();
+	std::vector<Point> GetEmpty();
+	void remove(std::vector<Point>&, int index);
 	int get_value();
-	bool check_if_repeat(vector<Point> &points);
+	bool check_if_repeat(std::vector<Point> &points);
 	Return_message* get_result();
 
 private:
-	void ScanLined(Point);
-	void Scanpoint(Point);
+	void ScanLined(Point point);
+	void Scanpoint(Point& point);
 private:
 	char* game_map;
 	char* comingcolor;
 	char* move;
 	int score=0;
 	int value;
-	const char scan_direction[8][2] = { {1,0},{0,1},{1,-1},{1,1},
+	const Point scan_direction[8] = { {1,0},{0,1},{1,-1},{1,1},
 										{-1,0},{0,-1},{-1,1},{-1,-1} };
-	vector<vector<Point>>lineds;//2个以上的都算
+	std::vector<std::vector<Point>>lineds;//2个以上的都算
 };

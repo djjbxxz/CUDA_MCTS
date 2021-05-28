@@ -10,27 +10,32 @@
     <Filter Include="Dependencies\Pathfinding">
       <UniqueIdentifier>{74d0c54f-91a6-4b40-b16b-5fb592ad14c9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="DLL_export">
+      <UniqueIdentifier>{a00a05e5-cb46-4ad8-a07a-a0b8c36545aa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Board.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MCTS.cpp" />
     <ClCompile Include="Node.cpp" />
-    <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="Visualization.cpp" />
     <ClCompile Include="GameControler.cpp">
       <Filter>Dependencies\GameControler</Filter>
     </ClCompile>
     <ClCompile Include="Pathfinding.cpp">
       <Filter>Dependencies\Pathfinding</Filter>
     </ClCompile>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>DLL_export</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>DLL_export</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Board.h" />
     <ClInclude Include="MCTS.h" />
     <ClInclude Include="Node.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="Visualization.h" />
     <ClInclude Include="GameControler.h">
       <Filter>Dependencies\GameControler</Filter>
     </ClInclude>
@@ -38,5 +43,13 @@
       <Filter>Dependencies\Pathfinding</Filter>
     </ClInclude>
     <ClInclude Include="threadpool.h" />
+    <ClInclude Include="interface.h" />
+    <ClInclude Include="framework.h">
+      <Filter>DLL_export</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>DLL_export</Filter>
+    </ClInclude>
+    <ClInclude Include="init_random.h" />
   </ItemGroup>
 </Project>

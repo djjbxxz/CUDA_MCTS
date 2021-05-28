@@ -1,4 +1,5 @@
 #include "GameControler.h"
+using namespace std;
 
 #define WEIGHT_OVER_5 9999
 #define WEIGHT_UNDER_5_LINEDS 50
@@ -42,13 +43,6 @@ void GameControler::go()
 	}
 }
 
-void GameControler::init_random()
-{
-	LARGE_INTEGER seed;
-	QueryPerformanceFrequency(&seed);
-	QueryPerformanceCounter(&seed);
-	srand(seed.QuadPart);
-}
 
 char GameControler::get_game_map(const Point& point)
 {
@@ -82,17 +76,17 @@ void GameControler::Scan_all()
 
 void GameControler::ScanLined(Point point)
 {
-	Point* new_point;
+	Point new_point;
 	for (int i = 0; i < 4; i++)
 	{
 		auto lined = vector<Point>();
-		new_point = &point;
+		new_point = point;
 		while (true)
 		{
-			new_point = &((*new_point) + scan_direction[i]);
-			if (get_game_map(*new_point) != get_game_map(point))
+			new_point = new_point + scan_direction[i];
+			if (get_game_map(new_point) != get_game_map(point))
 				break;
-			lined.emplace_back(new_point->x, new_point->y);
+			lined.emplace_back(new_point);
 		};
 		if (!lined.empty())
 		{
@@ -111,21 +105,21 @@ void GameControler::Scanpoints(vector<Point>& points)
 		Scanpoint(point);
 }
 
-void GameControler::Scanpoint(Point point)
+void GameControler::Scanpoint(Point& point)
 {
-	Point* new_point;
+	Point new_point;
 	for (int i = 0; i < 4; i++)
 	{
 		auto lined = vector<Point>();
 		for (int j = 0; j <= 4; j += 4)
 		{
-			new_point = &point;
+			new_point = point;
 			while (true)
 			{
-				new_point = &((*new_point) + scan_direction[i+j]);
-				if (get_game_map(*new_point) != get_game_map(point))
+				new_point = new_point + scan_direction[i+j];
+				if (get_game_map(new_point) != get_game_map(point))
 					break;
-				lined.emplace_back(new_point->x, new_point->y);
+				lined.emplace_back(new_point);
 			};
 		}
 		if (lined.size() >= 4)

@@ -1,4 +1,5 @@
 #include "Pathfinding.h"
+using namespace std;
 void Pathfinding::GetEmptySet()
 {
 	init_scan_map();
@@ -15,17 +16,18 @@ void Pathfinding::go()
 	MakeResult();
 }
 
-bool Pathfinding::is_inList(Point point, vector<Point>list)
+bool Pathfinding::is_inList(Point point, const vector<Point>& list)
 {
-	for (auto & i : list)
+	for (auto i : list)
 		if (i == point)
 			return true;
 	return false;
 }
 
-bool Pathfinding::is_inList(Point point, list<Point>_list)
+bool Pathfinding::is_inList(Point point, const list<Point>& _list)
 {
-	for (auto & i : _list)
+
+	for (auto i : _list)
 		if (i == point)
 			return true;
 	return false;
@@ -54,7 +56,7 @@ vector<Point> Pathfinding::get_reachable_point(Point point)
 	return closelist;
 }
 
-vector<Point> Pathfinding::getsurpoint_filter1(Point point, vector<Point>closelist)
+vector<Point> Pathfinding::getsurpoint_filter1(Point point, vector<Point>& closelist)
 {
 	auto surrdingpoints = getsurrdingpoint(point);
 	vector<Point> temp;
@@ -81,21 +83,21 @@ bool Pathfinding::is_scaned(Point point)
 
 void Pathfinding::init_scan_map()
 {
-	for (auto & i : is_scaned_map)
-		for (bool & j : i)
+	for (auto& i : is_scaned_map)
+		for (bool& j : i)
 			j = false;
 }
 
 void Pathfinding::GetBeginSet()
 {
-	for (const auto & i : emptyset)
+	for (const auto& i : emptyset)
 	{
 		init_scan_map();
 		startset.push_back(Getedge(i));
 	}
 }
 
-vector<Point> Pathfinding::Getedge(vector<Point>Pointset)
+vector<Point> Pathfinding::Getedge(const vector<Point>& Pointset)
 {
 	auto edge = vector<Point>();
 	Point surrdingpoint;
@@ -132,14 +134,12 @@ int Pathfinding::game_map(Point point)
 vector<Point> Pathfinding::getsurrdingpoint(Point point)
 {
 	auto temp = vector<Point>();
-	char x, y;
+	Point new_point;
 	for (auto i : scan_direction)
 	{
-		x = point.x + i[0];
-		y = point.y + i[1];
-		auto point = Point(x, y);
-		if (!is_outofrange(point))
-			temp.push_back(point);
+		new_point = point + i;
+		if (!is_outofrange(new_point))
+			temp.push_back(new_point);
 	}
 	return temp;
 }
@@ -147,15 +147,13 @@ vector<Point> Pathfinding::getsurrdingpoint(Point point)
 void Pathfinding::MakeResult()
 {
 	for (int i = 0; i < startset.size(); i++)
-	{
 		calculate(startset[i], emptyset[i]);
-	}
 }
 
-void Pathfinding::calculate(vector<Point>start, vector<Point>end)
+void Pathfinding::calculate(vector<Point>& start, vector<Point>& end)
 {
-	for (auto & i : start)
-		for (auto & j : end)
+	for (auto& i : start)
+		for (auto& j : end)
 			p[i.x * 9 * 9 * 9 + i.y * 9 * 9 + j.x * 9 + j.y] = true;
 }
 

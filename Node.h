@@ -6,7 +6,7 @@ class Node :public Board
 {
 public:
 	Node(Node* old,
-		vector<char>_last_move)
+		std::vector<char>_last_move)
 		:Board(old->game_map, old->next_three, old->score, _last_move)
 	{
 		is_root = false;
@@ -18,8 +18,8 @@ public:
 		parent_node(nullptr)
 	{}
 
-	Node(vector<char> game_map,
-		vector<char> next_three)
+	Node(std::vector<char> game_map,
+		std::vector<char> next_three)
 		:Board(game_map, next_three),
 		is_root(true),
 		parent_node(nullptr)
@@ -30,7 +30,7 @@ public:
 public:
 	Node* parent_node = nullptr;
 	Node* real_move = nullptr;
-	vector<Node*> children;
+	std::vector<Node*> children;
 	bool is_root;
 	unsigned int visit_count = 0;
 	float value = 0;

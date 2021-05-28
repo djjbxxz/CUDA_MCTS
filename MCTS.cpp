@@ -1,14 +1,13 @@
-﻿#include "stdafx.h"
-#include "MCTS.h"
-#include "Visualization.h"
-#include <Algorithm>
+﻿#include "MCTS.h"
+#include "threadpool.h"
+
 constexpr float decay_rate = 0.5;
-#define THREAD_MAX_NUM 6
-mutex mutex_leaves;
+
+using namespace std;
 vector<Node*> MCTS::leaves = vector<Node*>();
 void delete_node(Node* node)
 {
-	for (auto & i : node->children)
+	for (auto& i : node->children)
 		delete_node(i);
 	delete node;
 }
@@ -47,32 +46,77 @@ bool  comp(const Node* a, const Node* b) {
 }
 
 
+//void MCTS::expand()
+//{
+//
+//	current_node->visit_count++;
+//	Node* new_node;
+//	bool p[6561];
+//	for (int i = 0; i < 6561; i++)
+//		p[i] = false;
+//	current_node->call_estimate(p);
+//	for (int i = 0; i < 6561; i++)
+//		if (p[i])
+//		{
+//			new_node = new Node(current_node, convert_to_index(i));
+//			if (!new_node->is_end)
+//				leaves.push_back(new_node);
+//			current_node->children.push_back(new_node);
+//		}
+//
+//	//sort(leaves.begin(), leaves.end(), comp);
+//}
+
 void MCTS::expand()
 {
-
 	current_node->visit_count++;
 	Node* new_node;
 	bool p[6561];
-	for (bool & i : p)
+	for (bool& i : p)
 		i = false;
 	current_node->call_estimate(p);
+	vector< future<Node*> > results;
 	for (int i = 0; i < 6561; i++)
 		if (p[i])
 		{
-			new_node = new Node(current_node, convert_to_index(i));
-			if (!new_node->is_end)
-				leaves.push_back(new_node);
-			current_node->children.push_back(new_node);
+			results.emplace_back(
+				executor.enqueue
+				(create_new_node, current_node, i));
 		}
-
-	//sort(leaves.begin(), leaves.end(), comp);
+	for (auto&& result : results)
+	{
+		auto temp = result.get();
+		current_node->children.emplace_back(temp);
+		MCTS::leaves.push_back(temp);
+	}
 }
+
+
+//void MCTS::expand()
+//{
+//	current_node->visit_count++;
+//	Node* new_node;
+//	bool p[6561];
+//	for (bool& i : p)
+//		i = false;
+//	current_node->call_estimate(p);
+//	vector<thread> threads;
+//	for (int i = 0; i < 6561; i++)
+//		if (p[i])
+//		{
+//			threads.emplace_back(create_new_node, current_node, i);
+//		}
+//	for (auto&& result : threads)
+//	{
+//		result.join();
+//	}
+//}
 
 void MCTS::backup()
 {
 	if (current_node->is_root)
 		return;
-	for (auto & i : current_node->children)
+	for (auto& i : current_node->children)
 	{
 		current_node->value += i->value * decay_rate;
 	}
@@ -108,5 +152,32 @@ bool MCTS::play()
 
 Node* MCTS::create_new_node(Node* parent_node, int i)
 {
+	//return nullptr;
 	return new Node(parent_node, convert_to_index(i));
+}
+
+vector<char> MCTS::convert_to_index(int densed)
+{
+	auto r = vector<char>(4, 0);
+	for (int i = 3; i >= 0; i--)
+	{
+		r[i] = densed % 9;
+		densed /= 9;
+	}
+	return r;
+}
+
+int MCTS::do_MCTS(int iteration_each_step)
+{
+	for (int i = 0; i < iteration_each_step; i++)
+	{
+		if (!select())
+			break;
+		expand();
+		backup();
+
+	}
+	if (!play())
+		return -1;
+	return root->score;
 }
