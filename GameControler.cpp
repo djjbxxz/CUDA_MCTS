@@ -31,7 +31,7 @@ void GameControler::go()
 	Move();
 
 	Scan_all();
-	value = get_value();
+	connectivity = get_value();
 	AddScoreAndEliminate(true);
 	if (score == 0)
 	{
@@ -79,23 +79,53 @@ void GameControler::ScanLined(Point point)
 	Point new_point;
 	for (int i = 0; i < 4; i++)
 	{
-		auto lined = vector<Point>();
+		vector<Point>* lined = nullptr;
 		new_point = point;
 		while (true)
 		{
 			new_point = new_point + scan_direction[i];
 			if (get_game_map(new_point) != get_game_map(point))
 				break;
-			lined.emplace_back(new_point);
+			if (lined == nullptr)
+				lined = new vector<Point>;
+			lined->emplace_back(new_point);
 		};
-		if (!lined.empty())
+		if (lined && !lined->empty())
 		{
-			lined.push_back(point);
-			if (!check_if_repeat(lined))
-				lineds.push_back(lined);
+			lined->push_back(point);
+			if (!check_if_repeat(*lined))
+			{
+				vector<Point>temp(*lined);
+				delete lined;
+				lineds.push_back(temp);
+			}
 		}
 	}
 }
+
+//void GameControler::ScanLined(Point point)
+//{
+//	Point new_point;
+//	for (int i = 0; i < 4; i++)
+//	{
+//		auto lined = vector<Point>();
+//		new_point = point;
+//		while (true)
+//		{
+//			new_point = new_point + scan_direction[i];
+//			if (get_game_map(new_point) != get_game_map(point))
+//				break;
+//			lined.emplace_back(new_point);
+//		};
+//		if (!lined.empty())
+//		{
+//			lined.push_back(point);
+//			if (!check_if_repeat(lined))
+//				lineds.push_back(lined);
+//		}
+//	}
+//}
+
 
 
 void GameControler::Scanpoints(vector<Point>& points)
@@ -183,7 +213,7 @@ int GameControler::get_value()
 {
 	//TODO:将周围的empty优先纳入可能的5子，先于block_chess
 	// 撞到block_chess后换方向搜，标记 change_direction = true，留下标记，下次若回来从这里开始搜
-	int value = 0;
+	int connectivity = 0;
 	for (auto & lined : lineds)
 	{
 		size_t size = lined.size();
@@ -191,7 +221,7 @@ int GameControler::get_value()
 		if (still_need <= 0)
 		{
 			//4
-			value += WEIGHT_OVER_5 * size;
+			connectivity += WEIGHT_OVER_5 * size;
 			continue;
 		}
 		auto direction = lined[1] - lined[0];
@@ -244,13 +274,13 @@ int GameControler::get_value()
 			}
 		}
 		if (!change_direction && still_need > 0)
-			value -= size * WEIGHT_EACH_MARGIN_CHESS;
+			connectivity -= size * WEIGHT_EACH_MARGIN_CHESS;
 		else
-			value += size * size * size * size * WEIGHT_UNDER_5_LINEDS
+			connectivity += size * size * size * size * WEIGHT_UNDER_5_LINEDS
 			+ size * size * empty_count * WEIGHT_UNDER_5_EMPTY_CHESS
 			+ size * size * size * size * size * block_chess_count * WEIGHT_UNDER_5_BLOCK_CHESS;
 	}
-	return value;
+	return connectivity;
 }
 
 bool GameControler::check_if_repeat(vector<Point>& points)
@@ -263,7 +293,7 @@ bool GameControler::check_if_repeat(vector<Point>& points)
 
 Return_message* GameControler::get_result()
 {
-	return new Return_message(score, value);
+	return new Return_message(score, connectivity);
 }
 
 Return_message* judge(char* map, char* comingcolor, char* move)

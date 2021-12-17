@@ -10,8 +10,8 @@ bool get_move(
 	const std::vector<char>& game_map,
 	const std::vector<char>& next_three)
 {
-	auto mcts = MCTS(new Node(game_map, next_three));
-	if (mcts.do_MCTS(2) != -1)
+	auto mcts = MCTS(new Node(game_map, next_three),3);
+	if (mcts.do_MCTS(5) != -1)
 	{
 		last_move = mcts.root->last_move;
 		return true;

@@ -1,7 +1,7 @@
 ﻿//#include <cstdio>
 //#include "Board.h"
 //#include "Node.h"
-//#include "MCTS.h"
+#include "MCTS.h"
 //#include <conio.h>
 //#include "Pathfinding.h"
 //#include "GameControler.h"
@@ -23,3 +23,12 @@
 //	return index[0] * 8 * 8 * 8 + index[1] * 8 * 8 + index[2] * 8 + index[3];
 //}
 //
+
+void main()
+{
+	unsigned int depth=2;
+	auto node = Node();
+	auto mcts = MCTS(&node, depth+1);
+	auto result = mcts.do_MCTS(200);
+
+}

@@ -12,37 +12,46 @@ void delete_node(Node* node)
 	delete node;
 }
 
+//bool MCTS::select()
+//{
+//	if (root->is_end)
+//		return false;
+//	float max = 0.0;
+//	size_t max_index = 0;
+//	float ubc;
+//	for (size_t i = 0; i < leaves.size(); i++)
+//	{
+//		ubc = leaves[i]->get_UBC();
+//		if (ubc > max)
+//		{
+//			max = ubc;
+//			max_index = i;
+//		}
+//	}
+//	if (max_index < leaves.size())
+//	{
+//		current_node = leaves[max_index];
+//		leaves.erase(leaves.begin() + max_index);
+//		current_node->visit_count++;
+//		return true;
+//	}
+//	else
+//		return false;
+//
+//}
+
 bool MCTS::select()
 {
-	if (root->is_end)
+	if (leaves.empty())
 		return false;
-	float max = 0.0;
-	size_t max_index = 0;
-	float ubc;
-	for (size_t i = 0; i < leaves.size(); i++)
-	{
-		ubc = leaves[i]->get_UBC();
-		if (ubc > max)
-		{
-			max = ubc;
-			max_index = i;
-		}
-	}
-	if (max_index < leaves.size())
-	{
-		current_node = leaves[max_index];
-		leaves.erase(leaves.begin() + max_index);
-		current_node->visit_count++;
-		return true;
-	}
-	else
-		return false;
-
+	current_node = leaves.back();
+	leaves.pop_back();
+	return true;
 }
 
 
 bool  comp(const Node* a, const Node* b) {
-	return a->value > b->value;
+	return a->connectivity > b->connectivity;
 }
 
 
@@ -87,7 +96,10 @@ void MCTS::expand()
 	{
 		auto temp = result.get();
 		current_node->children.emplace_back(temp);
-		MCTS::leaves.push_back(temp);
+		if (temp->depth <= max_depth) 
+		{
+			MCTS::leaves.push_back(temp);
+		}
 	}
 }
 
@@ -118,19 +130,19 @@ void MCTS::backup()
 		return;
 	for (auto& i : current_node->children)
 	{
-		current_node->value += i->value * decay_rate;
+		current_node->Q_value += i->Q_value * decay_rate;
 	}
 	auto update_node = current_node;
 	while (!update_node->is_root)
 	{
-		update_node->parent_node->value += update_node->value * decay_rate;
+		update_node->parent_node->Q_value += update_node->Q_value * decay_rate;
 		update_node = update_node->parent_node;
 	}
 }
 
 
 bool  sort_children(const Node* a, const Node* b) {
-	return a->value > b->value;
+	return a->connectivity > b->connectivity;
 }
 
 bool MCTS::play()
@@ -167,15 +179,15 @@ vector<char> MCTS::convert_to_index(int densed)
 	return r;
 }
 
-int MCTS::do_MCTS(int iteration_each_step)
+int MCTS::do_MCTS(int max_it)
 {
-	for (int i = 0; i < iteration_each_step; i++)
+	int it = 0;
+	while (select() && it<max_it)
 	{
-		if (!select())
-			break;
 		expand();
 		backup();
-
+		it++;
+		std::cout << it << std::endl;
 	}
 	if (!play())
 		return -1;

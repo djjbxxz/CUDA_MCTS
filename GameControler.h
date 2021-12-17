@@ -4,8 +4,8 @@
 struct Return_message
 {
 	int score;
-	int value;
-	Return_message(int _score, int _value) :score(_score), value(_value) {};
+	int connectivity;
+	Return_message(int _score, int _value) :score(_score), connectivity(_value) {};
 };
 
 Return_message* judge(char* map, char* comingcolor, char* move);
@@ -63,7 +63,7 @@ private:
 	char* comingcolor;
 	char* move;
 	int score=0;
-	int value;
+	int connectivity;
 	const Point scan_direction[8] = { {1,0},{0,1},{1,-1},{1,1},
 										{-1,0},{0,-1},{-1,1},{-1,-1} };
 	std::vector<std::vector<Point>>lineds;//2个以上的都算
